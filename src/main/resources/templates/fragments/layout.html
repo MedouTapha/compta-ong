@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(titre)">
+    <meta charset="UTF-8"/>
+    <title th:text="${titre} + ' - Compta ONG'">Compta ONG</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<header class="app-header" th:fragment="header">
+    <a th:href="@{/}"><strong>Compta ONG</strong></a>
+    <nav sec:authorize="isAuthenticated()">
+        <a th:href="@{/comptes}">Comptes</a>
+        <a th:href="@{/financements}">Financements</a>
+        <a th:href="@{/destinations}">Destinations</a>
+        <a th:href="@{/budgets}">Budgets</a>
+        <a th:href="@{/tresorerie/encaissement}">Encaissement</a>
+        <a th:href="@{/tresorerie/decaissement}">Decaissement</a>
+        <a th:href="@{/tresorerie/transfert}">Transfert</a>
+        <a th:href="@{/tuteurs}">Tuteurs</a>
+        <a th:href="@{/enfants}">Enfants</a>
+        <a th:href="@{/aides}">Aides</a>
+        <a th:href="@{/listes-paiement}">Listes de paiement</a>
+        <a th:href="@{/etats/journal}">Journal</a>
+        <a th:href="@{/etats/balance}">Balance</a>
+        <span th:text="${#authentication.name}" style="margin-left:1rem;"></span>
+        <form th:action="@{/logout}" method="post" class="inline" style="margin-left:0.5rem;">
+            <button type="submit" class="btn secondary" style="padding:0.2rem 0.6rem;">Deconnexion</button>
+        </form>
+    </nav>
+</header>
+</body>
+</html>

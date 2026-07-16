@@ -32,17 +32,20 @@ public class EcritureService {
     private final PeriodeClotureeService periodeClotureeService;
     private final SoldeService soldeService;
     private final AuditService auditService;
+    private final BudgetControlService budgetControlService;
 
     public EcritureService(EcritureRepository ecritureRepository,
                             NumerotationService numerotationService,
                             PeriodeClotureeService periodeClotureeService,
                             SoldeService soldeService,
-                            AuditService auditService) {
+                            AuditService auditService,
+                            BudgetControlService budgetControlService) {
         this.ecritureRepository = ecritureRepository;
         this.numerotationService = numerotationService;
         this.periodeClotureeService = periodeClotureeService;
         this.soldeService = soldeService;
         this.auditService = auditService;
+        this.budgetControlService = budgetControlService;
     }
 
     /**
@@ -84,6 +87,7 @@ public class EcritureService {
         periodeClotureeService.verifierPeriodeOuverte(ecriture.getDateOperation());
         verifierCoherenceCompteDedie(ecriture);
         verifierSoldeDisponible(ecriture);
+        budgetControlService.verifierSeuils(ecriture);
 
         int numero = numerotationService.prochainNumero(ecriture.getPerimetreType(), ecriture.getFinancement());
         ecriture.setNumero(numero);
@@ -95,6 +99,25 @@ public class EcritureService {
                 "numero=" + numero + ";perimetre=" + ecriture.getPerimetreType());
 
         return ecriture;
+    }
+
+    /**
+     * US-4.3 : leve l'alerte de depassement budgetaire sur une ecriture bloquee puis
+     * tente a nouveau la validation. Reserve au role Directeur (controle au niveau securite).
+     */
+    @Transactional
+    public Ecriture debloquerBudgetEtValider(Long ecritureId, String utilisateur) {
+        Ecriture ecriture = ecritureRepository.findById(ecritureId)
+                .orElseThrow(() -> new RessourceIntrouvableException("Ecriture introuvable : " + ecritureId));
+
+        if (ecriture.getStatut() != StatutEcriture.BROUILLON) {
+            throw new EtatInvalideException("Seule une ecriture BROUILLON en attente peut etre debloquee.");
+        }
+
+        ecriture.debloquerBudget(utilisateur);
+        auditService.enregistrer(utilisateur, "DEBLOCAGE_BUDGET", "Ecriture", ecriture.getId(), null);
+
+        return valider(ecritureId, utilisateur);
     }
 
     /**

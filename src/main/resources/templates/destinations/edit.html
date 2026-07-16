@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Modifier destination')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="alert error" th:if="${erreur}" th:text="${erreur}"></div>
+    <div class="card">
+        <h2>Modifier la destination <span th:text="${destination.code}"></span></h2>
+        <form th:action="@{/destinations/{id}/edit(id=${destination.id})}" method="post">
+            <label for="libelle">Libelle</label>
+            <input type="text" id="libelle" name="libelle" th:value="${destination.libelle}" required="required"/>
+            <label for="actif">Actif ?</label>
+            <select id="actif" name="actif">
+                <option value="true" th:selected="${destination.actif}">Oui</option>
+                <option value="false" th:selected="${!destination.actif}">Non</option>
+            </select>
+            <button type="submit" class="btn">Enregistrer</button>
+            <a th:href="@{/destinations}" class="btn secondary">Annuler</a>
+        </form>
+    </div>
+</main>
+</body>
+</html>

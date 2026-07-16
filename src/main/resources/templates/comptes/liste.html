@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Comptes')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="alert error" th:if="${erreur}" th:text="${erreur}"></div>
+
+    <div class="card">
+        <h2>Nouveau compte</h2>
+        <form th:action="@{/comptes}" method="post">
+            <div class="field-row">
+                <div>
+                    <label for="numero">Numero</label>
+                    <input type="text" id="numero" name="numero" required="required" placeholder="ex: 5711"/>
+                </div>
+                <div>
+                    <label for="libelle">Libelle</label>
+                    <input type="text" id="libelle" name="libelle" required="required"/>
+                </div>
+            </div>
+            <div class="field-row">
+                <div>
+                    <label for="estTresorerie">Compte de tresorerie ?</label>
+                    <select id="estTresorerie" name="estTresorerie">
+                        <option value="false">Non</option>
+                        <option value="true">Oui</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="projetDedieId">Dedie a un financement (optionnel)</label>
+                    <select id="projetDedieId" name="projetDedieId">
+                        <option value="">-- Compte partage --</option>
+                        <option th:each="f : ${financements}" th:value="${f.id}" th:text="${f.code} + ' - ' + ${f.libelle}"></option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn">Creer</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Plan de comptes</h2>
+        <table>
+            <thead>
+            <tr><th>Numero</th><th>Libelle</th><th>Tresorerie</th><th>Dedie a</th><th>Actif</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${comptes}">
+                <td th:text="${c.numero}"></td>
+                <td th:text="${c.libelle}"></td>
+                <td th:text="${c.estTresorerie} ? 'Oui' : 'Non'"></td>
+                <td th:text="${c.projetDedie != null} ? ${c.projetDedie.code} : '-'"></td>
+                <td th:text="${c.actif} ? 'Oui' : 'Non'"></td>
+                <td><a th:href="@{/comptes/{id}/edit(id=${c.id})}">Modifier</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

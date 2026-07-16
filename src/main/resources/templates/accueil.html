@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Accueil')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="card">
+        <h2>Bienvenue</h2>
+        <p>Gestion comptable et suivi des aides.</p>
+        <p sec:authorize="hasRole('DIRECTEUR')">Vous etes connecte en tant que <strong>Directeur</strong>.</p>
+        <p sec:authorize="hasRole('COMPTABLE')">Vous etes connecte en tant que <strong>Comptable</strong>.</p>
+    </div>
+</main>
+</body>
+</html>

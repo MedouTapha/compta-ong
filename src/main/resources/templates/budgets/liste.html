@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Budgets')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="alert error" th:if="${erreur}" th:text="${erreur}"></div>
+
+    <div class="card">
+        <h2>Nouvelle ligne de budget</h2>
+        <form th:action="@{/budgets}" method="post">
+            <div class="field-row">
+                <div>
+                    <label for="financementId">Financement</label>
+                    <select id="financementId" name="financementId" required="required">
+                        <option th:each="f : ${financements}" th:value="${f.id}" th:text="${f.code} + ' - ' + ${f.libelle}"></option>
+                    </select>
+                </div>
+                <div><label for="libelle">Libelle</label><input type="text" id="libelle" name="libelle" required="required"/></div>
+                <div><label for="montant">Montant</label><input type="number" step="0.01" id="montant" name="montant" required="required"/></div>
+                <div><label for="exercice">Exercice</label><input type="number" id="exercice" name="exercice" required="required" th:value="${#dates.year(#dates.createNow())}"/></div>
+            </div>
+            <button type="submit" class="btn">Creer</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Suivi budgetaire</h2>
+        <table>
+            <thead><tr><th>Financement</th><th>Libelle</th><th>Exercice</th><th>Budget</th><th>Engage</th><th>%</th><th>Statut</th></tr></thead>
+            <tbody>
+            <tr th:each="s : ${suivis}">
+                <td th:text="${s.ligneBudget.financement.code}"></td>
+                <td th:text="${s.ligneBudget.libelle}"></td>
+                <td th:text="${s.ligneBudget.exercice}"></td>
+                <td th:text="${s.ligneBudget.montant}"></td>
+                <td th:text="${s.montantEngage}"></td>
+                <td th:text="${s.pourcentage} + '%'"></td>
+                <td>
+                    <span class="badge contrepassee" th:if="${s.depasseLimite()}">Depasse</span>
+                    <span class="badge" style="background:#fff4e0;color:#8a5a00;" th:if="${!s.depasseLimite() and s.depasseAlerte()}">Alerte 80%</span>
+                    <span class="badge validee" th:if="${!s.depasseAlerte()}">OK</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

@@ -46,6 +46,8 @@ class EcritureServiceTest {
     private SoldeService soldeService;
     @Mock
     private AuditService auditService;
+    @Mock
+    private BudgetControlService budgetControlService;
 
     @InjectMocks
     private EcritureService ecritureService;

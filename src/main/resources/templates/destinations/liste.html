@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Destinations')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="alert error" th:if="${erreur}" th:text="${erreur}"></div>
+    <div class="card">
+        <h2>Nouvelle destination</h2>
+        <form th:action="@{/destinations}" method="post">
+            <div class="field-row">
+                <div><label for="code">Code</label><input type="text" id="code" name="code" required="required" placeholder="ex: AID"/></div>
+                <div><label for="libelle">Libelle</label><input type="text" id="libelle" name="libelle" required="required"/></div>
+            </div>
+            <button type="submit" class="btn">Creer</button>
+        </form>
+    </div>
+    <div class="card">
+        <h2>Destinations</h2>
+        <table>
+            <thead><tr><th>Code</th><th>Libelle</th><th>Actif</th><th></th></tr></thead>
+            <tbody>
+            <tr th:each="d : ${destinations}">
+                <td th:text="${d.code}"></td>
+                <td th:text="${d.libelle}"></td>
+                <td th:text="${d.actif} ? 'Oui' : 'Non'"></td>
+                <td><a th:href="@{/destinations/{id}/edit(id=${d.id})}">Modifier</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

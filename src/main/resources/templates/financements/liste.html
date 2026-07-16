@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Financements')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="alert error" th:if="${erreur}" th:text="${erreur}"></div>
+
+    <div class="card">
+        <h2>Nouveau financement / projet</h2>
+        <form th:action="@{/financements}" method="post">
+            <div class="field-row">
+                <div><label for="code">Code</label><input type="text" id="code" name="code" required="required" placeholder="ex: B01"/></div>
+                <div><label for="libelle">Libelle</label><input type="text" id="libelle" name="libelle" required="required"/></div>
+            </div>
+            <div class="field-row">
+                <div><label for="bailleur">Bailleur</label><input type="text" id="bailleur" name="bailleur"/></div>
+                <div><label for="dateDebut">Date debut</label><input type="date" id="dateDebut" name="dateDebut" required="required"/></div>
+                <div><label for="dateFin">Date fin</label><input type="date" id="dateFin" name="dateFin"/></div>
+            </div>
+            <button type="submit" class="btn">Creer</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Financements / Projets</h2>
+        <table>
+            <thead><tr><th>Code</th><th>Libelle</th><th>Bailleur</th><th>Debut</th><th>Fin</th><th>Statut</th><th></th></tr></thead>
+            <tbody>
+            <tr th:each="f : ${financements}">
+                <td th:text="${f.code}"></td>
+                <td th:text="${f.libelle}"></td>
+                <td th:text="${f.bailleur}"></td>
+                <td th:text="${f.dateDebut}"></td>
+                <td th:text="${f.dateFin}"></td>
+                <td th:text="${f.statut}"></td>
+                <td><a th:href="@{/financements/{id}/edit(id=${f.id})}">Modifier</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

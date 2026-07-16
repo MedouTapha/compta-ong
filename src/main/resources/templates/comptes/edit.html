@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Modifier compte')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="alert error" th:if="${erreur}" th:text="${erreur}"></div>
+    <div class="card">
+        <h2>Modifier le compte <span th:text="${compte.numero}"></span></h2>
+        <form th:action="@{/comptes/{id}/edit(id=${compte.id})}" method="post">
+            <label for="libelle">Libelle</label>
+            <input type="text" id="libelle" name="libelle" th:value="${compte.libelle}" required="required"/>
+
+            <label for="estTresorerie">Compte de tresorerie ?</label>
+            <select id="estTresorerie" name="estTresorerie">
+                <option value="true" th:selected="${compte.estTresorerie}">Oui</option>
+                <option value="false" th:selected="${!compte.estTresorerie}">Non</option>
+            </select>
+
+            <label for="projetDedieId">Dedie a un financement (optionnel)</label>
+            <select id="projetDedieId" name="projetDedieId">
+                <option value="">-- Compte partage --</option>
+                <option th:each="f : ${financements}" th:value="${f.id}" th:text="${f.code} + ' - ' + ${f.libelle}"
+                        th:selected="${compte.projetDedie != null and compte.projetDedie.id == f.id}"></option>
+            </select>
+
+            <label for="actif">Actif ?</label>
+            <select id="actif" name="actif">
+                <option value="true" th:selected="${compte.actif}">Oui</option>
+                <option value="false" th:selected="${!compte.actif}">Non</option>
+            </select>
+
+            <button type="submit" class="btn">Enregistrer</button>
+            <a th:href="@{/comptes}" class="btn secondary">Annuler</a>
+        </form>
+    </div>
+</main>
+</body>
+</html>

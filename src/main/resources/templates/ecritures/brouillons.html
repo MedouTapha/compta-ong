@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Ecritures en brouillon')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="alert error" th:if="${erreur}" th:text="${erreur}"></div>
+    <div class="card">
+        <h2>Ecritures en brouillon a valider</h2>
+        <table>
+            <thead><tr><th>Date</th><th>Type</th><th>Perimetre</th><th>Libelle</th><th>Piece</th><th>Lignes</th><th></th></tr></thead>
+            <tbody>
+            <tr th:each="e : ${ecritures}">
+                <td th:text="${e.dateOperation}"></td>
+                <td th:text="${e.typeOperation}"></td>
+                <td th:text="${e.financement != null} ? ${e.financement.code} : 'GENERAL'"></td>
+                <td th:text="${e.libelle}"></td>
+                <td th:text="${e.referencePiece}"></td>
+                <td>
+                    <div th:each="l : ${e.lignes}">
+                        <span th:text="${l.compte.numero}"></span>
+                        <span th:if="${l.debit.compareTo(T(java.math.BigDecimal).ZERO)} > 0" th:text="'D ' + ${l.debit}"></span>
+                        <span th:if="${l.credit.compareTo(T(java.math.BigDecimal).ZERO)} > 0" th:text="'C ' + ${l.credit}"></span>
+                    </div>
+                </td>
+                <td>
+                    <form th:action="@{/ecritures/{id}/valider(id=${e.id})}" method="post" class="inline">
+                        <button type="submit" class="btn">Valider</button>
+                    </form>
+                    <form th:action="@{/decaissements/{id}/debloquer-budget(id=${e.id})}" method="post" class="inline"
+                          sec:authorize="hasRole('DIRECTEUR')">
+                        <button type="submit" class="btn secondary">Debloquer budget</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

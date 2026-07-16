@@ -62,6 +62,8 @@ CREATE TABLE ecriture (
     valide_par          VARCHAR(100),
     cree_le             TIMESTAMP       NOT NULL,
     valide_le           TIMESTAMP,
+    budget_debloque_par VARCHAR(100),
+    budget_debloque_le  TIMESTAMP,
     version             BIGINT          NOT NULL DEFAULT 0,
     CHECK (perimetre_type = 'GENERAL' OR financement_id IS NOT NULL),
     CHECK (perimetre_type = 'PROJET' OR financement_id IS NULL)

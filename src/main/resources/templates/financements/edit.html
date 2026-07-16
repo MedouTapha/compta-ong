@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Modifier financement')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="alert error" th:if="${erreur}" th:text="${erreur}"></div>
+    <div class="card">
+        <h2>Modifier le financement <span th:text="${financement.code}"></span></h2>
+        <form th:action="@{/financements/{id}/edit(id=${financement.id})}" method="post">
+            <label for="libelle">Libelle</label>
+            <input type="text" id="libelle" name="libelle" th:value="${financement.libelle}" required="required"/>
+            <label for="bailleur">Bailleur</label>
+            <input type="text" id="bailleur" name="bailleur" th:value="${financement.bailleur}"/>
+            <label for="dateDebut">Date debut</label>
+            <input type="date" id="dateDebut" name="dateDebut" th:value="${financement.dateDebut}" required="required"/>
+            <label for="dateFin">Date fin</label>
+            <input type="date" id="dateFin" name="dateFin" th:value="${financement.dateFin}"/>
+            <label for="statut">Statut</label>
+            <select id="statut" name="statut">
+                <option th:each="s : ${statuts}" th:value="${s}" th:text="${s}" th:selected="${s == financement.statut}"></option>
+            </select>
+            <button type="submit" class="btn">Enregistrer</button>
+            <a th:href="@{/financements}" class="btn secondary">Annuler</a>
+        </form>
+    </div>
+</main>
+</body>
+</html>

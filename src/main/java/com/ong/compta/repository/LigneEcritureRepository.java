@@ -2,6 +2,7 @@ package com.ong.compta.repository;
 
 import com.ong.compta.domain.Compte;
 import com.ong.compta.domain.Financement;
+import com.ong.compta.domain.LigneBudget;
 import com.ong.compta.domain.LigneEcriture;
 import com.ong.compta.domain.enums.PerimetreType;
 import com.ong.compta.domain.enums.StatutEcriture;
@@ -25,4 +26,10 @@ public interface LigneEcritureRepository extends JpaRepository<LigneEcriture, Lo
                                         @Param("financement") Financement financement);
 
     List<LigneEcriture> findByEcritureStatutAndCompte(StatutEcriture statut, Compte compte);
+
+    @Query("select coalesce(sum(l.debit), 0) - coalesce(sum(l.credit), 0) " +
+           "from LigneEcriture l " +
+           "where l.ligneBudget = :ligneBudget " +
+           "and l.ecriture.statut = com.ong.compta.domain.enums.StatutEcriture.VALIDEE")
+    BigDecimal montantEngageParLigneBudget(@Param("ligneBudget") LigneBudget ligneBudget);
 }

@@ -61,6 +61,12 @@ public class Ecriture {
     @Column(name = "valide_le")
     private LocalDateTime valideLe;
 
+    @Column(name = "budget_debloque_par")
+    private String budgetDebloquePar;
+
+    @Column(name = "budget_debloque_le")
+    private LocalDateTime budgetDebloqueLe;
+
     @Version
     private Long version;
 
@@ -86,6 +92,20 @@ public class Ecriture {
     public void ajouterLigne(LigneEcriture ligne) {
         ligne.setEcriture(this);
         this.lignes.add(ligne);
+    }
+
+    /**
+     * Leve l'alerte de depassement budgetaire (US-4.3) : seul un Directeur peut effectuer
+     * cette action (controle applique au niveau securite/endpoint), qui autorise la
+     * validation d'un decaissement au-dela de 100% de la ligne de budget.
+     */
+    public void debloquerBudget(String utilisateur) {
+        this.budgetDebloquePar = utilisateur;
+        this.budgetDebloqueLe = LocalDateTime.now();
+    }
+
+    public boolean isBudgetDebloque() {
+        return budgetDebloquePar != null;
     }
 
     public Long getId() {
@@ -166,6 +186,14 @@ public class Ecriture {
 
     public Long getVersion() {
         return version;
+    }
+
+    public String getBudgetDebloquePar() {
+        return budgetDebloquePar;
+    }
+
+    public LocalDateTime getBudgetDebloqueLe() {
+        return budgetDebloqueLe;
     }
 
     public List<LigneEcriture> getLignes() {

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Decaissement')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="alert error" th:if="${erreur}" th:text="${erreur}"></div>
+    <div class="card">
+        <h2>Decaissement</h2>
+        <form th:action="@{/tresorerie/decaissement}" method="post">
+            <div class="field-row">
+                <div>
+                    <label for="perimetre">Perimetre</label>
+                    <select id="perimetre" name="perimetre">
+                        <option value="GENERAL">General</option>
+                        <option value="PROJET">Projet</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="financementId">Financement (si perimetre Projet)</label>
+                    <select id="financementId" name="financementId">
+                        <option value="">--</option>
+                        <option th:each="f : ${financements}" th:value="${f.id}" th:text="${f.code} + ' - ' + ${f.libelle}"></option>
+                    </select>
+                </div>
+                <div><label for="dateOperation">Date</label><input type="date" id="dateOperation" name="dateOperation" required="required"/></div>
+            </div>
+            <div class="field-row">
+                <div>
+                    <label for="compteChargeId">Compte de charge (debit)</label>
+                    <select id="compteChargeId" name="compteChargeId" required="required">
+                        <option th:each="c : ${comptes}" th:if="${!c.estTresorerie}" th:value="${c.id}" th:text="${c.numero} + ' - ' + ${c.libelle}"></option>
+                    </select>
+                </div>
+                <div>
+                    <label for="compteTresorerieId">Compte de tresorerie (credit)</label>
+                    <select id="compteTresorerieId" name="compteTresorerieId" required="required">
+                        <option th:each="c : ${comptes}" th:if="${c.estTresorerie}" th:value="${c.id}" th:text="${c.numero} + ' - ' + ${c.libelle}"></option>
+                    </select>
+                </div>
+                <div>
+                    <label for="destinationId">Destination</label>
+                    <select id="destinationId" name="destinationId">
+                        <option value="">--</option>
+                        <option th:each="d : ${destinations}" th:value="${d.id}" th:text="${d.code} + ' - ' + ${d.libelle}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="field-row">
+                <div>
+                    <label for="ligneBudgetId">Ligne de budget (controle 80%/100%)</label>
+                    <select id="ligneBudgetId" name="ligneBudgetId">
+                        <option value="">--</option>
+                        <option th:each="lb : ${lignesBudget}" th:value="${lb.id}"
+                                th:text="${lb.financement.code} + ' - ' + ${lb.libelle} + ' (' + ${lb.exercice} + ')'"></option>
+                    </select>
+                </div>
+                <div><label for="montant">Montant</label><input type="number" step="0.01" id="montant" name="montant" required="required"/></div>
+            </div>
+            <div class="field-row">
+                <div><label for="referencePiece">Piece justificative</label><input type="text" id="referencePiece" name="referencePiece" required="required"/></div>
+                <div><label for="libelle">Libelle</label><input type="text" id="libelle" name="libelle" required="required"/></div>
+            </div>
+            <button type="submit" class="btn">Enregistrer (brouillon)</button>
+        </form>
+    </div>
+</main>
+</body>
+</html>
