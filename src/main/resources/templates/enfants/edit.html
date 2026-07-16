@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Modifier enfant')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="alert error" th:if="${erreur}" th:text="${erreur}"></div>
+    <div class="card">
+        <h2>Modifier l'enfant <span th:text="${enfant.nom}"></span></h2>
+        <form th:action="@{/enfants/{id}/edit(id=${enfant.id})}" method="post">
+            <div class="field-row">
+                <div>
+                    <label for="nom">Nom</label>
+                    <input type="text" id="nom" name="nom" th:value="${enfant.nom}" required="required"/>
+                </div>
+                <div>
+                    <label for="dateNaissance">Date de naissance</label>
+                    <input type="date" id="dateNaissance" name="dateNaissance" th:value="${enfant.dateNaissance}" required="required"/>
+                </div>
+                <div>
+                    <label for="sexe">Sexe</label>
+                    <select id="sexe" name="sexe">
+                        <option value="M" th:selected="${enfant.sexe == 'M'}">Masculin</option>
+                        <option value="F" th:selected="${enfant.sexe == 'F'}">Feminin</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field-row">
+                <div>
+                    <label for="tuteurId">Tuteur</label>
+                    <select id="tuteurId" name="tuteurId" required="required">
+                        <option th:each="t : ${tuteurs}" th:value="${t.id}" th:text="${t.nom}"
+                                th:selected="${enfant.tuteur.id == t.id}"></option>
+                    </select>
+                </div>
+                <div>
+                    <label for="statut">Statut</label>
+                    <select id="statut" name="statut">
+                        <option value="ACTIF" th:selected="${enfant.statut.name() == 'ACTIF'}">Actif</option>
+                        <option value="SORTI" th:selected="${enfant.statut.name() == 'SORTI'}">Sorti</option>
+                    </select>
+                </div>
+            </div>
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes" rows="2" th:text="${enfant.notes}"></textarea>
+
+            <button type="submit" class="btn">Enregistrer</button>
+            <a th:href="@{/enfants}" class="btn secondary">Annuler</a>
+        </form>
+    </div>
+</main>
+</body>
+</html>

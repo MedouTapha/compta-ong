@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Historique enfant')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="card">
+        <h2>Historique par enfant</h2>
+        <form th:action="@{/etats/historique-enfant}" method="get">
+            <div class="field-row">
+                <div>
+                    <label for="enfantId">Enfant</label>
+                    <select id="enfantId" name="enfantId">
+                        <option value="">-- Choisir --</option>
+                        <option th:each="e : ${enfants}" th:value="${e.id}" th:text="${e.nom}"
+                                th:selected="${enfant != null and enfant.id == e.id}"></option>
+                    </select>
+                </div>
+                <div style="align-self:flex-end;">
+                    <button type="submit" class="btn">Afficher</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="card" th:if="${enfant != null}">
+        <h2>Aides de <span th:text="${enfant.nom}"></span></h2>
+        <p>Tuteur : <span th:text="${enfant.tuteur.nom}"></span> |
+           Statut : <span class="badge" th:classappend="${enfant.statut.name() == 'ACTIF'} ? 'validee' : 'contrepassee'" th:text="${enfant.statut}"></span></p>
+        <table>
+            <thead>
+            <tr><th>Financement</th><th>Montant mensuel</th><th>Decision</th><th>Debut</th><th>Fin</th><th>Statut</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="a : ${aides}">
+                <td th:text="${a.financement.code}"></td>
+                <td th:text="${a.montantMensuel}"></td>
+                <td th:text="${a.referenceDecision}"></td>
+                <td th:text="${a.dateDebut}"></td>
+                <td th:text="${a.dateFin != null} ? ${a.dateFin} : '-'"></td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${a.statut.name() == 'ACTIVE'} ? 'validee' : (${a.statut.name() == 'SUSPENDUE'} ? 'brouillon' : 'contrepassee')"
+                          th:text="${a.statut}"></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

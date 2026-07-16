@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Rapport projet')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="card">
+        <h2>Rapport par projet / bailleur</h2>
+        <form th:action="@{/etats/rapport-projet}" method="get">
+            <div class="field-row">
+                <div>
+                    <label for="financementId">Financement</label>
+                    <select id="financementId" name="financementId">
+                        <option value="">-- Choisir --</option>
+                        <option th:each="f : ${financements}" th:value="${f.id}" th:text="${f.code} + ' - ' + ${f.libelle}"
+                                th:selected="${financement != null and financement.id == f.id}"></option>
+                    </select>
+                </div>
+                <div style="align-self:flex-end;">
+                    <button type="submit" class="btn">Afficher</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="card" th:if="${ecritures != null}">
+        <h2>Ecritures du projet <span th:text="${financement.code}"></span></h2>
+        <table>
+            <thead>
+            <tr><th>Date</th><th>N.</th><th>Type</th><th>Libelle</th><th>Piece</th><th>Lignes</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="e : ${ecritures}">
+                <td th:text="${e.dateOperation}"></td>
+                <td th:text="${e.numero}"></td>
+                <td th:text="${e.typeOperation}"></td>
+                <td th:text="${e.libelle}"></td>
+                <td th:text="${e.referencePiece}"></td>
+                <td>
+                    <div th:each="l : ${e.lignes}">
+                        <span th:text="${l.compte.numero}"></span>
+                        <span th:if="${l.debit.compareTo(T(java.math.BigDecimal).ZERO)} > 0" th:text="'D ' + ${l.debit}"></span>
+                        <span th:if="${l.credit.compareTo(T(java.math.BigDecimal).ZERO)} > 0" th:text="'C ' + ${l.credit}"></span>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

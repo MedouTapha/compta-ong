@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Balance')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="card">
+        <h2>Balance des comptes</h2>
+        <form th:action="@{/etats/balance}" method="get">
+            <div class="field-row">
+                <div>
+                    <label for="debut">Du</label>
+                    <input type="date" id="debut" name="debut" th:value="${debut}"/>
+                </div>
+                <div>
+                    <label for="fin">Au</label>
+                    <input type="date" id="fin" name="fin" th:value="${fin}"/>
+                </div>
+                <div style="align-self:flex-end;">
+                    <button type="submit" class="btn">Filtrer</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="card">
+        <table>
+            <thead>
+            <tr><th>Numero</th><th>Libelle</th><th>Total Debit</th><th>Total Credit</th><th>Solde</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="l : ${lignes}">
+                <td th:text="${l.compte().numero}"></td>
+                <td th:text="${l.compte().libelle}"></td>
+                <td th:text="${l.totalDebit()}"></td>
+                <td th:text="${l.totalCredit()}"></td>
+                <td th:text="${l.solde()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

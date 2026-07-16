@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Tuteurs')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="alert error" th:if="${erreur}" th:text="${erreur}"></div>
+
+    <div class="card">
+        <h2>Nouveau tuteur</h2>
+        <form th:action="@{/tuteurs}" method="post">
+            <div class="field-row">
+                <div>
+                    <label for="nom">Nom</label>
+                    <input type="text" id="nom" name="nom" required="required"/>
+                </div>
+                <div>
+                    <label for="telephone">Telephone</label>
+                    <input type="text" id="telephone" name="telephone"/>
+                </div>
+            </div>
+            <div class="field-row">
+                <div>
+                    <label for="pieceIdentiteType">Type piece d'identite</label>
+                    <input type="text" id="pieceIdentiteType" name="pieceIdentiteType" placeholder="CNI, Passeport..."/>
+                </div>
+                <div>
+                    <label for="pieceIdentiteNumero">Numero piece d'identite</label>
+                    <input type="text" id="pieceIdentiteNumero" name="pieceIdentiteNumero"/>
+                </div>
+            </div>
+            <button type="submit" class="btn">Creer</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Liste des tuteurs</h2>
+        <table>
+            <thead>
+            <tr><th>Nom</th><th>Telephone</th><th>Piece d'identite</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="t : ${tuteurs}">
+                <td th:text="${t.nom}"></td>
+                <td th:text="${t.telephone}"></td>
+                <td th:text="${t.pieceIdentiteType != null} ? ${t.pieceIdentiteType} + ' ' + ${t.pieceIdentiteNumero} : '-'"></td>
+                <td><a th:href="@{/tuteurs/{id}/edit(id=${t.id})}">Modifier</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

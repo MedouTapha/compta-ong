@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Journal')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="card">
+        <h2>Journal comptable</h2>
+        <form th:action="@{/etats/journal}" method="get">
+            <div class="field-row">
+                <div>
+                    <label for="debut">Du</label>
+                    <input type="date" id="debut" name="debut" th:value="${debut}"/>
+                </div>
+                <div>
+                    <label for="fin">Au</label>
+                    <input type="date" id="fin" name="fin" th:value="${fin}"/>
+                </div>
+                <div style="align-self:flex-end;">
+                    <button type="submit" class="btn">Filtrer</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="card">
+        <table>
+            <thead>
+            <tr><th>Date</th><th>N.</th><th>Type</th><th>Perimetre</th><th>Libelle</th><th>Piece</th><th>Statut</th><th>Lignes</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="e : ${ecritures}">
+                <td th:text="${e.dateOperation}"></td>
+                <td th:text="${e.numero != null} ? ${e.numero} : '-'"></td>
+                <td th:text="${e.typeOperation}"></td>
+                <td th:text="${e.financement != null} ? ${e.financement.code} : 'GENERAL'"></td>
+                <td th:text="${e.libelle}"></td>
+                <td th:text="${e.referencePiece}"></td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${e.statut.name() == 'BROUILLON'} ? 'brouillon' : (${e.statut.name() == 'VALIDEE'} ? 'validee' : 'contrepassee')"
+                          th:text="${e.statut}"></span>
+                </td>
+                <td>
+                    <div th:each="l : ${e.lignes}">
+                        <span th:text="${l.compte.numero}"></span>
+                        <span th:if="${l.debit.compareTo(T(java.math.BigDecimal).ZERO)} > 0" th:text="'D ' + ${l.debit}"></span>
+                        <span th:if="${l.credit.compareTo(T(java.math.BigDecimal).ZERO)} > 0" th:text="'C ' + ${l.credit}"></span>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

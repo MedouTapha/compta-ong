@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Modifier aide')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="alert error" th:if="${erreur}" th:text="${erreur}"></div>
+    <div class="card">
+        <h2>Modifier l'aide pour <span th:text="${aide.enfant.nom}"></span></h2>
+        <form th:action="@{/aides/{id}/edit(id=${aide.id})}" method="post">
+            <div class="field-row">
+                <div>
+                    <label for="montantMensuel">Montant mensuel</label>
+                    <input type="number" id="montantMensuel" name="montantMensuel" step="0.01" min="0"
+                           th:value="${aide.montantMensuel}" required="required"/>
+                </div>
+                <div>
+                    <label for="referenceDecision">Reference decision</label>
+                    <input type="text" id="referenceDecision" name="referenceDecision"
+                           th:value="${aide.referenceDecision}" required="required"/>
+                </div>
+            </div>
+            <div class="field-row">
+                <div>
+                    <label for="dateDebut">Date debut</label>
+                    <input type="date" id="dateDebut" name="dateDebut" th:value="${aide.dateDebut}" required="required"/>
+                </div>
+                <div>
+                    <label for="dateFin">Date fin (optionnel)</label>
+                    <input type="date" id="dateFin" name="dateFin" th:value="${aide.dateFin}"/>
+                </div>
+                <div>
+                    <label for="statut">Statut</label>
+                    <select id="statut" name="statut">
+                        <option value="ACTIVE" th:selected="${aide.statut.name() == 'ACTIVE'}">Active</option>
+                        <option value="SUSPENDUE" th:selected="${aide.statut.name() == 'SUSPENDUE'}">Suspendue</option>
+                        <option value="CLOTUREE" th:selected="${aide.statut.name() == 'CLOTUREE'}">Cloturee</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn">Enregistrer</button>
+            <a th:href="@{/aides}" class="btn secondary">Annuler</a>
+        </form>
+    </div>
+</main>
+</body>
+</html>

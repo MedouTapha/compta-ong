@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Listes de paiement')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="alert error" th:if="${erreur}" th:text="${erreur}"></div>
+
+    <div class="card">
+        <h2>Generer une liste de paiement</h2>
+        <form th:action="@{/listes-paiement/generer}" method="post">
+            <div class="field-row">
+                <div>
+                    <label for="annee">Annee</label>
+                    <input type="number" id="annee" name="annee" required="required" value="2026"/>
+                </div>
+                <div>
+                    <label for="mois">Mois</label>
+                    <input type="number" id="mois" name="mois" required="required" min="1" max="12"/>
+                </div>
+            </div>
+            <button type="submit" class="btn">Generer</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Listes existantes</h2>
+        <table>
+            <thead>
+            <tr><th>Mois</th><th>Annee</th><th>Statut</th><th>Generee par</th><th>Validee par</th><th>Cloturee par</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="l : ${listes}">
+                <td th:text="${l.mois}"></td>
+                <td th:text="${l.annee}"></td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${l.statut.name() == 'GENEREE'} ? 'brouillon' : (${l.statut.name() == 'VALIDEE'} ? 'validee' : 'contrepassee')"
+                          th:text="${l.statut}"></span>
+                </td>
+                <td th:text="${l.genereePar}"></td>
+                <td th:text="${l.valideePar != null} ? ${l.valideePar} : '-'"></td>
+                <td th:text="${l.clotureePar != null} ? ${l.clotureePar} : '-'"></td>
+                <td><a th:href="@{/listes-paiement/{id}(id=${l.id})}">Detail</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

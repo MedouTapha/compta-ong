@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .requestMatchers("/comptes/**", "/financements/**", "/destinations/**", "/budgets/**",
                         "/tresorerie/**", "/ecritures/**", "/enfants/**", "/tuteurs/**", "/aides/**",
                         "/listes-paiement/**", "/lignes-paiement/**", "/decaissements/**")
-                        .hasRole("COMPTABLE")
+                        .hasAnyRole("COMPTABLE", "DIRECTEUR")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

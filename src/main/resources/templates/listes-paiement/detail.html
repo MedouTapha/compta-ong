@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Detail liste de paiement')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="app-content">
+    <div class="alert error" th:if="${erreur}" th:text="${erreur}"></div>
+
+    <div class="card">
+        <h2>Liste de paiement <span th:text="${liste.mois} + '/' + ${liste.annee}"></span>
+            <span class="badge"
+                  th:classappend="${liste.statut.name() == 'GENEREE'} ? 'brouillon' : (${liste.statut.name() == 'VALIDEE'} ? 'validee' : 'contrepassee')"
+                  th:text="${liste.statut}" style="margin-left:0.5rem;"></span>
+        </h2>
+
+        <div style="margin-bottom:1rem;">
+            <form th:if="${liste.statut.name() == 'GENEREE'}" th:action="@{/listes-paiement/{id}/valider(id=${liste.id})}" method="post" class="inline"
+                  sec:authorize="hasRole('DIRECTEUR')">
+                <button type="submit" class="btn">Valider la liste</button>
+            </form>
+            <form th:if="${liste.statut.name() == 'VALIDEE'}" th:action="@{/listes-paiement/{id}/cloturer(id=${liste.id})}" method="post" class="inline">
+                <button type="submit" class="btn">Cloturer la liste</button>
+            </form>
+        </div>
+
+        <table>
+            <thead>
+            <tr><th>Enfant</th><th>Financement</th><th>Montant</th><th>Statut</th><th>Date versement</th><th>Decharge</th><th>Motif</th>
+                <th th:if="${liste.statut.name() == 'VALIDEE'}">Actions</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="lp : ${liste.lignes}">
+                <td th:text="${lp.aide.enfant.nom}"></td>
+                <td th:text="${lp.aide.financement.code}"></td>
+                <td th:text="${lp.montant}"></td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${lp.statut.name() == 'VERSE'} ? 'validee' : (${lp.statut.name() == 'NON_VERSE'} ? 'contrepassee' : 'brouillon')"
+                          th:text="${lp.statut}"></span>
+                </td>
+                <td th:text="${lp.dateVersement != null} ? ${lp.dateVersement} : '-'"></td>
+                <td th:text="${lp.referenceDecharge != null} ? ${lp.referenceDecharge} : '-'"></td>
+                <td th:text="${lp.motifNonVersement != null} ? ${lp.motifNonVersement} : '-'"></td>
+                <td th:if="${liste.statut.name() == 'VALIDEE' and lp.statut.name() == 'A_PAYER'}">
+                    <form th:action="@{/listes-paiement/lignes/{lid}/verser(lid=${lp.id})}" method="post" class="inline">
+                        <input type="hidden" name="listeId" th:value="${liste.id}"/>
+                        <input type="date" name="dateVersement" required="required" style="width:auto;display:inline;"/>
+                        <input type="text" name="referenceDecharge" placeholder="Ref decharge" required="required" style="width:auto;display:inline;"/>
+                        <button type="submit" class="btn" style="padding:0.2rem 0.5rem;">Verse</button>
+                    </form>
+                    <form th:action="@{/listes-paiement/lignes/{lid}/non-verser(lid=${lp.id})}" method="post" class="inline" style="margin-left:0.3rem;">
+                        <input type="hidden" name="listeId" th:value="${liste.id}"/>
+                        <input type="text" name="motif" placeholder="Motif" required="required" style="width:auto;display:inline;"/>
+                        <button type="submit" class="btn secondary" style="padding:0.2rem 0.5rem;">Non verse</button>
+                    </form>
+                </td>
+                <td th:if="${liste.statut.name() == 'VALIDEE' and lp.statut.name() != 'A_PAYER'}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

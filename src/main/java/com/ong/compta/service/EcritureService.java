@@ -48,6 +48,11 @@ public class EcritureService {
         this.budgetControlService = budgetControlService;
     }
 
+    public Ecriture trouverParId(Long id) {
+        return ecritureRepository.findById(id)
+                .orElseThrow(() -> new RessourceIntrouvableException("Ecriture introuvable : " + id));
+    }
+
     /**
      * Cree une ecriture en BROUILLON. Applique les regles structurelles qui ne dependent
      * pas de l'etat concurrent de la base (RG-1, RG-4, RG-5).
