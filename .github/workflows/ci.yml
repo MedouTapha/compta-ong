@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master, 'claude/**' ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Unit tests (no Docker)
+        run: mvn -B test -Dtest='!com.ong.compta.integration.**' -DfailIfNoTests=false
+
+      - name: Integration tests (Testcontainers)
+        run: mvn -B test -Dtest='com.ong.compta.integration.**' -DfailIfNoTests=false
+
+      - name: Package
+        run: mvn -B package -DskipTests
+
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: compta-ong-jar
+          path: target/*.jar
+          retention-days: 7
