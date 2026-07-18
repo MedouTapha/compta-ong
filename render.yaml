@@ -1,0 +1,26 @@
+databases:
+  - name: compta-ong-db
+    plan: free
+    databaseName: compta_ong
+    user: compta
+
+services:
+  - type: web
+    name: compta-ong
+    runtime: docker
+    plan: free
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: compta-ong-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: compta-ong-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: compta-ong-db
+          property: password
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
